@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #1a1512; /* warm near-black; matches the video's dark tone */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Render the (orange) logo PNGs as crisp white for use over the video */
+.logo-white {
+  filter: brightness(0) invert(1);
+}
+
+/* Graceful staggered entrance (about / manifesto) */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fade-up-1 { animation-delay: 60ms; }
+.fade-up-2 { animation-delay: 200ms; }
+.fade-up-3 { animation-delay: 340ms; }
+.fade-up-4 { animation-delay: 480ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { animation: none; }
+}
+
+/* Newsletter modal entrance */
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.modal-pop {
+  animation: modal-pop 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-pop { animation: none; }
+}
+
+/* Long-form legal pages (privacy / terms) */
+.legal {
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(239, 235, 229, 0.78);
+}
+.legal h2 {
+  margin-top: 2.2rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.legal p {
+  margin-bottom: 1rem;
+}
+.legal ul {
+  margin: 0 0 1rem 1.1rem;
+  list-style: disc;
+}
+.legal li {
+  margin-bottom: 0.4rem;
+}
+.legal a {
+  color: #c98a52;
+  text-decoration: underline;
+}
+.legal strong {
+  color: rgba(239, 235, 229, 0.95);
+}
+
+/* Respect users who prefer reduced motion: the <video> is paused via JS,
+   and we keep the poster image visible. */
+@media (prefers-reduced-motion: reduce) {
+  .bg-video {
+    display: none;
+  }
+}
