@@ -20,6 +20,12 @@ body {
   filter: brightness(0) invert(1);
 }
 
+/* SF Pro (Apple system) — used for the hero headline */
+.font-sf {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Inter', system-ui, sans-serif;
+}
+
 /* Graceful staggered entrance (about / manifesto) */
 @keyframes fade-up {
   from {
@@ -41,6 +47,34 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .fade-up { animation: none; }
+}
+
+/* Schools marquee (faded, looping logo strip) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 18s linear infinite;
+}
+.schools-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
 }
 
 /* Newsletter modal entrance */

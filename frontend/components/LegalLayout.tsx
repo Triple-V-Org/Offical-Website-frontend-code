@@ -1,8 +1,6 @@
-'use client';
-
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import Link from 'next/link';
-import SignupModal from '@/components/SignupModal';
+import SiteHeader from '@/components/SiteHeader';
 
 export default function LegalLayout({
   title,
@@ -13,27 +11,9 @@ export default function LegalLayout({
   updated?: string;
   children: ReactNode;
 }) {
-  const [signupOpen, setSignupOpen] = useState(false);
-
   return (
     <main className="min-h-screen bg-[#1a1512] text-paper">
-      {/* Top bar */}
-      <header className="flex items-center justify-between px-[3.2vw] py-5 sm:py-7">
-        <Link href="/" aria-label="Figwork — home" className="inline-flex">
-          <img
-            src="/img/figwork-mark.png"
-            alt="Figwork"
-            className="logo-white h-8 w-auto select-none sm:h-9"
-            draggable={false}
-          />
-        </Link>
-        <button
-          onClick={() => setSignupOpen(true)}
-          className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate shadow-sm transition hover:bg-white/90 active:scale-[0.98]"
-        >
-          Sign up
-        </button>
-      </header>
+      <SiteHeader />
 
       {/* Content */}
       <article className="legal mx-auto max-w-[760px] px-6 pb-28 pt-10 sm:pt-16">
@@ -73,8 +53,6 @@ export default function LegalLayout({
           </nav>
         </div>
       </footer>
-
-      <SignupModal open={signupOpen} onClose={() => setSignupOpen(false)} />
     </main>
   );
 }
