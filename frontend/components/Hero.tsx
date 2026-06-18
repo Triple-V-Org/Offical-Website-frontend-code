@@ -74,8 +74,8 @@ export default function Hero() {
           land your next job
         </h1>
 
-        <div className="flex w-[min(34vw,380px)] translate-y-[0.6vw] flex-col items-end gap-3 text-right">
-          {EXTENSION_LIVE ? badge : <WaitlistForm align="end" className="ml-auto" />}
+        <div className="flex w-[min(34vw,380px)] translate-y-[0.6vw] flex-col items-center gap-3 text-center">
+          {EXTENSION_LIVE ? badge : <WaitlistForm />}
           {caption}
         </div>
       </div>
@@ -88,8 +88,8 @@ export default function Hero() {
           land your next job
         </h1>
 
-        {/* Email module above the marquee, centered to each other */}
-        <div className="mt-auto flex flex-col items-center gap-6 pb-14">
+        {/* Email module sits higher; marquee stays anchored near the bottom */}
+        <div className="mt-auto flex flex-col items-center gap-14 pb-14">
           {EXTENSION_LIVE ? badge : <WaitlistForm align="start" />}
           <SchoolsMarquee />
         </div>
