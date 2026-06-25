@@ -91,6 +91,9 @@ export default function AboutPage() {
             <Link href="/" className="transition hover:text-white">
               Home
             </Link>
+            <Link href="/support" className="transition hover:text-white">
+              Support
+            </Link>
             <Link href="/privacy" className="transition hover:text-white">
               Privacy
             </Link>

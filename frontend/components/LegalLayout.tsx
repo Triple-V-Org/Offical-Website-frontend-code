@@ -44,6 +44,9 @@ export default function LegalLayout({
             <Link href="/about" className="transition hover:text-white">
               About Us
             </Link>
+            <Link href="/support" className="transition hover:text-white">
+              Support
+            </Link>
             <Link href="/privacy" className="transition hover:text-white">
               Privacy
             </Link>

@@ -1,14 +1,9 @@
 'use client';
 
-/**
- * Footer overlay (matches asset #4). It carries its own top→bottom dark fade,
- * so the "black fade" + footer only appear once the user scrolls past the hero.
- */
 export default function Footer() {
   return (
     <footer className="relative z-10 bg-[#14100c]">
       <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-end gap-10 px-6 pb-12 pt-16 sm:px-10 md:grid-cols-[1fr_auto_1fr]">
-        {/* Brand (left) */}
         <div className="flex flex-col items-center gap-2 md:items-start">
           <img
             src="/img/figwork-wordmark.png"
@@ -21,10 +16,12 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Links (centered) */}
         <nav className="flex flex-wrap items-center justify-center gap-x-12 gap-y-3 text-sm font-medium text-white/85">
           <a href="/about" className="transition hover:text-white">
             About Us
+          </a>
+          <a href="/support" className="transition hover:text-white">
+            Support
           </a>
           <a href="/privacy" className="transition hover:text-white">
             Privacy
@@ -34,7 +31,6 @@ export default function Footer() {
           </a>
         </nav>
 
-        {/* Socials (right) */}
         <div className="flex items-center justify-center gap-4 md:justify-end">
           <a
             href="https://www.instagram.com/"
