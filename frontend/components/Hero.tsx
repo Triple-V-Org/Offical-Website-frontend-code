@@ -3,6 +3,7 @@
 import { EXTENSION_LIVE, EXTENSION_URL } from '@/lib/config';
 import WaitlistForm from '@/components/WaitlistForm';
 import SchoolsMarquee from '@/components/SchoolsMarquee';
+import SocialProof from '@/components/SocialProof';
 
 /**
  * Hero overlay over the looping video.
@@ -75,6 +76,7 @@ export default function Hero() {
         </h1>
 
         <div className="flex w-[min(34vw,380px)] translate-y-[0.6vw] flex-col items-center gap-3 text-center">
+          <SocialProof className="mb-1" />
           {EXTENSION_LIVE ? badge : <WaitlistForm />}
           {caption}
         </div>
@@ -90,7 +92,10 @@ export default function Hero() {
 
         {/* Email module sits higher; marquee stays anchored near the bottom */}
         <div className="mt-auto flex flex-col items-center gap-14 pb-14">
-          {EXTENSION_LIVE ? badge : <WaitlistForm align="start" />}
+          <div className="flex flex-col items-center gap-4">
+            <SocialProof />
+            {EXTENSION_LIVE ? badge : <WaitlistForm align="start" />}
+          </div>
           <SchoolsMarquee />
         </div>
       </div>

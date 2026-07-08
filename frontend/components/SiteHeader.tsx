@@ -9,12 +9,23 @@ import { EXTENSION_LIVE } from '@/lib/config';
  * Shared top bar.
  *  - `overlay` floats it transparently over the hero video (home page).
  *  - Otherwise it sits in normal flow on the dark pages (about / legal).
+ *  - `tone="dark"` renders dark-on-light (for the light "Figwork in action" hero).
+ *  - `showHowItWorks` toggles the nav pill (hidden on the How it works page itself).
  *
  * The "Sign up" button (and its newsletter modal) only appear once the
- * extension is live; in waitlist mode the header is just the logo.
+ * extension is live; in waitlist mode the header is just the logo (+ nav).
  */
-export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+export default function SiteHeader({
+  overlay = false,
+  tone = 'light',
+  showHowItWorks = true,
+}: {
+  overlay?: boolean;
+  tone?: 'light' | 'dark';
+  showHowItWorks?: boolean;
+}) {
   const [signupOpen, setSignupOpen] = useState(false);
+  const dark = tone === 'dark';
 
   return (
     <>
@@ -27,19 +38,38 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
           <img
             src="/img/figwork-mark.png"
             alt="Figwork"
-            className="logo-white h-8 w-auto select-none sm:h-9"
+            className={`h-8 w-auto select-none sm:h-9 ${dark ? '' : 'logo-white'}`}
             draggable={false}
           />
         </Link>
 
-        {EXTENSION_LIVE && (
-          <button
-            onClick={() => setSignupOpen(true)}
-            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate shadow-sm transition hover:bg-white/90 active:scale-[0.98]"
-          >
-            Sign up
-          </button>
-        )}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {showHowItWorks && (
+            <Link
+              href="/how-it-works"
+              className={`shine-ring rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-[0.98] ${
+                dark
+                  ? 'border-slate/25 text-slate hover:bg-slate/10'
+                  : 'border-white/25 text-white hover:bg-white/10'
+              }`}
+            >
+              How it works
+            </Link>
+          )}
+
+          {EXTENSION_LIVE && (
+            <button
+              onClick={() => setSignupOpen(true)}
+              className={`rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition active:scale-[0.98] ${
+                dark
+                  ? 'bg-slate text-white hover:bg-slate/90'
+                  : 'bg-white text-slate hover:bg-white/90'
+              }`}
+            >
+              Sign up
+            </button>
+          )}
+        </div>
       </header>
 
       {EXTENSION_LIVE && (

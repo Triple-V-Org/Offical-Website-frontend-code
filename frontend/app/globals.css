@@ -95,6 +95,50 @@ body {
   .modal-pop { animation: none; }
 }
 
+/* Idle "shine" that travels around a pill's border (How it works button).
+   Uses an animated conic-gradient angle via @property; where @property is
+   unsupported the ring simply renders a soft static highlight. */
+@property --shine-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes shine-rotate {
+  to {
+    --shine-angle: 360deg;
+  }
+}
+.shine-ring {
+  position: relative;
+  isolation: isolate;
+}
+.shine-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.6px;
+  background: conic-gradient(
+    from var(--shine-angle),
+    transparent 0deg,
+    transparent 230deg,
+    rgba(255, 255, 255, 0.35) 285deg,
+    rgba(255, 255, 255, 0.95) 310deg,
+    rgba(255, 255, 255, 0.35) 335deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: shine-rotate 2.8s linear infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shine-ring::before {
+    animation: none;
+  }
+}
+
 /* Long-form legal pages (privacy / terms) */
 .legal {
   font-size: 15px;
