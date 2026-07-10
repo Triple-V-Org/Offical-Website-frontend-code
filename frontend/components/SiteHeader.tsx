@@ -5,16 +5,6 @@ import Link from 'next/link';
 import SignupModal from '@/components/SignupModal';
 import { EXTENSION_LIVE } from '@/lib/config';
 
-/**
- * Shared top bar.
- *  - `overlay` floats it transparently over the hero video (home page).
- *  - Otherwise it sits in normal flow on the dark pages (about / legal).
- *  - `tone="dark"` renders dark-on-light (for the light "Figwork in action" hero).
- *  - `showHowItWorks` toggles the nav pill (hidden on the How it works page itself).
- *
- * The "Sign up" button (and its newsletter modal) only appear once the
- * extension is live; in waitlist mode the header is just the logo (+ nav).
- */
 export default function SiteHeader({
   overlay = false,
   tone = 'light',

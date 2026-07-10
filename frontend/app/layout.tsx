@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Hanken_Grotesk } from 'next/font/google';
+import MixpanelProvider from '@/components/MixpanelProvider';
 import './globals.css';
 
 const inter = Inter({
@@ -53,7 +54,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <MixpanelProvider>{children}</MixpanelProvider>
+      </body>
     </html>
   );
 }

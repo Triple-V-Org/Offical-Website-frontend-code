@@ -2,12 +2,8 @@
 
 import { useState } from 'react';
 import { API_BASE, isValidEmail } from '@/lib/config';
+import { trackEvent, identifyUser, events } from '@/lib/mixpanel';
 
-/**
- * Inline email waitlist (no modal). Used in the hero before the extension ships.
- * Submits to the backend when configured; otherwise confirms optimistically so
- * the flow works in preview.
- */
 export default function WaitlistForm({
   className = '',
   align = 'start',
@@ -46,6 +42,11 @@ export default function WaitlistForm({
         throw new Error(data.error || 'Something went wrong.');
       }
       setStatus('ok');
+      identifyUser(email);
+      trackEvent(events.WAITLIST_SIGNUP, {
+        signup_method: 'email',
+        signup_source: 'website_waitlist',
+      });
     } catch (err) {
       setStatus('error');
       setMessage(err instanceof Error ? err.message : 'Network error.');

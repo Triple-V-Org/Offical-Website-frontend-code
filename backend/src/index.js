@@ -560,6 +560,116 @@ app.post('/api/support', async (req, res) => {
   }
 });
 
+// Account deletion request
+app.post('/api/delete-account', async (req, res) => {
+  const { email, reason } = req.body;
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+  const supportEmail = process.env.SUPPORT_EMAIL || process.env.NOTIFICATION_EMAIL || 'app-account@triple3v.org';
+
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.FROM_EMAIL) {
+    console.log('SES not configured, skipping deletion emails');
+    return res.json({ success: true, message: 'Deletion request received' });
+  }
+
+  try {
+    const timestamp = new Date().toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      dateStyle: 'full',
+      timeStyle: 'long'
+    });
+
+    // Send notification to team
+    await ses.send(new SendEmailCommand({
+      Source: process.env.FROM_EMAIL,
+      Destination: {
+        ToAddresses: [supportEmail],
+      },
+      Message: {
+        Subject: { Data: `[Account Deletion] Request from ${normalizedEmail}` },
+        Body: {
+          Html: { Data: `
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family: -apple-system, sans-serif; background: #f5f5f5; padding: 40px;">
+  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+    <div style="background: linear-gradient(135deg, #c75000, #e67300); padding: 30px; text-align: center;">
+      <img src="https://figwork.ai/img/figwork-wordmark.png" alt="Figwork" width="120" style="margin-bottom: 16px;" />
+      <h1 style="margin: 0; font-size: 22px; color: #fff;">Account Deletion Request</h1>
+    </div>
+    <div style="padding: 40px;">
+      <p style="margin: 0 0 16px; font-size: 12px; color: #888; text-transform: uppercase;">Email</p>
+      <p style="margin: 0 0 24px; font-size: 18px; font-weight: 600; color: #c75000;">${normalizedEmail}</p>
+      <p style="margin: 0 0 16px; font-size: 12px; color: #888; text-transform: uppercase;">Reason</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: #1a1512;">${reason || 'Not provided'}</p>
+      <p style="margin: 0 0 16px; font-size: 12px; color: #888; text-transform: uppercase;">Received</p>
+      <p style="margin: 0; font-size: 14px; color: #666;">${timestamp}</p>
+      <p style="margin: 4px 0 0; font-size: 12px; color: #999;">IP: ${ip || 'Unknown'}</p>
+    </div>
+    <div style="background: #faf8f6; padding: 20px; text-align: center;">
+      <p style="margin: 0; font-size: 12px; color: #888;">Action required: Delete user data within 30 days</p>
+    </div>
+  </div>
+</body></html>` },
+          Text: { Data: `Account Deletion Request\n\nEmail: ${normalizedEmail}\nReason: ${reason || 'Not provided'}\nTime: ${timestamp}\nIP: ${ip || 'Unknown'}\n\nAction required: Delete user data within 30 days.` },
+        },
+      },
+    }));
+    console.log('Deletion notification sent to:', supportEmail);
+
+    // Send confirmation to user
+    await ses.send(new SendEmailCommand({
+      Source: process.env.FROM_EMAIL,
+      Destination: {
+        ToAddresses: [normalizedEmail],
+      },
+      Message: {
+        Subject: { Data: "Account deletion request received — Figwork" },
+        Body: {
+          Html: { Data: `
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family: -apple-system, sans-serif; background: #f5f5f5; padding: 40px;">
+  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+    <div style="background: linear-gradient(135deg, #1a1512, #2d2420); padding: 40px; text-align: center;">
+      <img src="https://figwork.ai/img/figwork-wordmark.png" alt="Figwork" width="140" />
+    </div>
+    <div style="padding: 40px;">
+      <h1 style="margin: 0 0 20px; font-size: 28px; color: #1a1512;">Account deletion request received</h1>
+      <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a;">
+        We've received your request to delete your Figwork account and associated data.
+      </p>
+      <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a;">
+        Your data will be permanently deleted within <strong>30 days</strong>. You'll receive a confirmation email once the deletion is complete.
+      </p>
+      <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4a4a4a;">
+        If you didn't request this or changed your mind, please contact us at <a href="mailto:support@figwork.ai" style="color: #c75000;">support@figwork.ai</a>.
+      </p>
+    </div>
+    <div style="background: #faf8f6; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+      <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #1a1512;">Figwork</p>
+      <p style="margin: 0; font-size: 12px; color: #aaa;">&copy; ${new Date().getFullYear()} Figwork. All rights reserved.</p>
+    </div>
+  </div>
+</body></html>` },
+          Text: { Data: `Account Deletion Request Received\n\nWe've received your request to delete your Figwork account and associated data.\n\nYour data will be permanently deleted within 30 days. You'll receive a confirmation email once the deletion is complete.\n\nIf you didn't request this or changed your mind, please contact us at support@figwork.ai.\n\n— The Figwork Team` },
+        },
+      },
+    }));
+    console.log('Deletion confirmation sent to:', normalizedEmail);
+
+    res.json({ success: true, message: 'Deletion request received' });
+  } catch (err) {
+    console.error('Deletion request error:', err);
+    res.status(500).json({ error: 'Failed to process request' });
+  }
+});
+
 // Start server
 initDb().then(() => {
   app.listen(PORT, '0.0.0.0', () => {
